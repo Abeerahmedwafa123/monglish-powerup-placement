@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monglish · Power Up Placement Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <img src="assets/monglish_white.png" alt="Monglish International Academy" class="logo" />
+    <div class="header-meta">
+      <span id="timer" class="timer" hidden aria-live="polite">60:00</span>
+      <details class="help">
+        <summary aria-label="Need help?">
+          <span class="help-icon" aria-hidden="true">?</span> Need help?
+        </summary>
+        <div class="help-pop">
+          <strong>Quick help</strong>
+          <ul>
+            <li>Use headphones in a quiet room.</li>
+            <li>Press <b>▶ Play</b> to hear listening questions.</li>
+            <li>Just do your best — there are no trick questions!</li>
+            <li>A teacher can help at any time.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ SCREEN 1: LANDING ============ -->
+    <section id="screen-landing" class="screen active">
+      <div class="landing-grid">
+
+        <!-- Hero -->
+        <div class="hero-col">
+          <span class="pill">
+            <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 2l2.2 5.8L20 10l-5.8 2.2L12 18l-2.2-5.8L4 10l5.8-2.2z"/></svg>
+            Smart English Placement
+          </span>
+          <h1>Let's find your<br><span class="accent">perfect level!</span></h1>
+          <p class="subtitle">A friendly, adaptive test that gets to know your English and guides you to the right Power&nbsp;Up course.</p>
+
+          <button type="button" id="watchBtn" class="btn-watch">
+            <span class="w-play" aria-hidden="true">▶</span> Watch how it works
+          </button>
+
+          <div class="pathway" aria-label="Level pathway from Pre-A1 to B1">
+            <span class="lvl lvl-1">Pre-A1</span><i class="arrow"></i>
+            <span class="lvl lvl-2">A1</span><i class="arrow"></i>
+            <span class="lvl lvl-4">A2</span><i class="arrow"></i>
+            <span class="lvl lvl-6">B1</span>
+          </div>
+
+          <ul class="features">
+            <li>
+              <span class="f-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+              <div><b>30–40 min</b><span>Take your time</span></div>
+            </li>
+            <li>
+              <span class="f-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/></svg></span>
+              <div><b>4 skills</b><span>Listen, read,<br>write &amp; speak</span></div>
+            </li>
+            <li>
+              <span class="f-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.5 5.3 5.8.8-4.2 4 1 5.7L12 22l-5.1-2.6 1-5.7-4.2-4 5.8-.8z"/></svg></span>
+              <div><b>Your best fit</b><span>Level &amp; book<br>recommendation</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mascot -->
+        <div class="mascot-col" aria-hidden="true">
+          <div class="speech">Hi! I'm Mongiz.<br>I'll be with you!</div>
+          <div class="mascot-glow"></div>
+          <img src="assets/mongiz-student.png" alt="" class="mascot" />
+        </div>
+
+        <!-- Registration card -->
+        <form id="regForm" class="reg-card" novalidate>
+          <span class="step">Step 1 of 3</span>
+          <h2>Ready to begin?</h2>
+          <p class="reg-sub">Tell us a little about yourself first.</p>
+
+          <div class="field">
+            <label for="stuName">Your first name</label>
+            <div class="input-wrap">
+              <svg viewBox="0 0 24 24" class="in-ico" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+              <input id="stuName" name="name" type="text" autocomplete="given-name" required placeholder="Type your name" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="stuAge">Your age</label>
+            <div class="input-wrap">
+              <svg viewBox="0 0 24 24" class="in-ico" aria-hidden="true"><path d="M12 3l9 6-9 6-9-6z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+              <select id="stuAge" name="age" required>
+                <option value="" selected disabled>Choose your age</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+              <svg viewBox="0 0 24 24" class="chev" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+
+          <details class="more-fields">
+            <summary>Add school / class (optional)</summary>
+            <div class="field">
+              <label for="stuSchool">School / branch</label>
+              <div class="input-wrap"><input id="stuSchool" name="school" type="text" placeholder="e.g. Monglish Cairo" /></div>
+            </div>
+            <div class="field">
+              <label for="stuClass">Class / group</label>
+              <div class="input-wrap"><input id="stuClass" name="class" type="text" placeholder="e.g. Group B" /></div>
+            </div>
+          </details>
+
+          <button type="button" id="testSoundBtn" class="sound-card">
+            <span class="s-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 8a5 5 0 010 8"/></svg></span>
+            <span class="s-txt"><b>Check your sound</b><span id="soundStatus">You'll need headphones</span></span>
+            <span class="s-play">▶</span>
+          </button>
+
+          <p id="regError" class="form-error" role="alert" hidden></p>
+          <button type="submit" id="startBtn" class="btn-glow">Start my placement test →</button>
+          <p class="privacy">
+            <svg viewBox="0 0 24 24" class="lock" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+            Your answers stay private and secure
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 2: INSTRUCTIONS ============ -->
+    <section id="screen-instructions" class="screen">
+      <div class="card intro-card">
+        <span class="step">Step 2 of 3</span>
+        <h2>How the test works</h2>
+        <div class="instruction-video-block">
+          <h3>Watch Mongiz tell you the instructions</h3>
+          <div class="instruction-video-frame">
+            <iframe id="introVideoMain"
+              src="https://drive.google.com/file/d/1Fol1M5tcJjV-37UvS8-iFyF_gyHpQd2H/preview"
+              title="Mongiz placement test instructions"
+              allow="autoplay; fullscreen" allowfullscreen frameborder="0" loading="lazy"></iframe>
+          </div>
+        </div>
+        <ul class="steps">
+          <li><span class="step-ico">1</span> There are <strong>4 skills</strong>: Listening, Reading, Writing and Speaking.</li>
+          <li><span class="step-ico">2</span> The test is <strong>adaptive</strong> — do well and the questions get harder; answers are chosen from dropdown menus.</li>
+          <li><span class="step-ico">3</span> Your <strong>Writing and Speaking</strong> tasks are then chosen to match your score.</li>
+          <li><span class="step-ico">4</span> For Listening, press <strong>▶ Play</strong> to hear each exercise (replay twice).</li>
+          <li><span class="step-ico">5</span> For Writing you can <strong>type</strong> — or <strong>upload a photo</strong> of your handwriting (or a PDF/Word file).</li>
+          <li><span class="step-ico">6</span> Writing and Speaking are checked by your <strong>teacher</strong>. You have <strong>60 minutes</strong>.</li>
+        </ul>
+        <button id="beginBtn" class="btn-glow">I'm ready — let's go! →</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 3: QUESTION (adaptive L & R) ============ -->
+    <section id="screen-question" class="screen">
+      <div class="progress-wrap">
+        <div class="section-tabs" id="sectionTabs" aria-hidden="true">
+          <span data-sec="listening">Listening</span>
+          <span data-sec="reading">Reading</span>
+          <span data-sec="writing">Writing</span>
+          <span data-sec="speaking">Speaking</span>
+        </div>
+        <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+      </div>
+
+      <div class="card question-card">
+        <div class="q-head">
+          <h2 id="secTitle">Listening</h2>
+          <span id="qCounter" class="q-counter"></span>
+        </div>
+
+        <div id="audioControls" class="audio-controls" hidden>
+          <button id="playBtn" class="btn-play">▶ Play</button>
+          <span id="replayInfo" class="muted"></span>
+        </div>
+
+        <img id="qVisual" class="question-visual" src="" alt="" hidden />
+        <p id="qText" class="q-text"></p>
+        <div id="options" class="options" role="radiogroup" aria-label="Answer options"></div>
+        <button id="nextBtn" class="btn-glow" disabled>Next →</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 3b: RECEPTIVE SCORE ============ -->
+    <section id="screen-results" class="screen">
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div></div>
+      <div class="card intro-card center-card">
+        <h2>🎉 Great work<span id="resName"></span>!</h2>
+        <p class="muted">Here is your score so far:</p>
+        <div class="mid-score-grid">
+          <div class="mid-tile"><div class="v" id="resListen">–</div><div class="l">Listening</div></div>
+          <div class="mid-tile"><div class="v" id="resRead">–</div><div class="l">Reading</div></div>
+        </div>
+        <p class="note" id="resNote">Your next tasks have been chosen especially for you from this score.</p>
+        <button id="toWritingBtn" class="btn-glow">Continue to Writing →</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 4: WRITING ============ -->
+    <section id="screen-writing" class="screen">
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div></div>
+      <div class="card">
+        <div class="q-head"><h2>Writing</h2><span id="writeScorePill" class="q-counter"></span></div>
+        <p class="muted">This task was chosen for you from your Listening &amp; Reading score.</p>
+        <p id="writeInstruction" class="q-text"></p>
+        <p id="writeStarter" class="starter"></p>
+        <ul id="writePrompts" class="prompt-list"></ul>
+        <textarea id="writeArea" rows="8" placeholder="Write your answer here…" aria-label="Your writing"></textarea>
+        <div class="word-count"><span id="wordCount">0</span> words</div>
+
+        <div class="upload-box">
+          <label for="writeUpload" class="upload-label">
+            <span class="u-ico" aria-hidden="true">📎</span>
+            <span><b>Or upload your handwritten work</b><br>
+            <span class="muted">Take a photo of your paper, or attach a PDF / Word file</span></span>
+          </label>
+          <input type="file" id="writeUpload" accept="image/*,.pdf,.doc,.docx" />
+          <div id="uploadPreview" class="upload-preview" hidden></div>
+        </div>
+
+        <button id="writeDone" class="btn-glow">Finish writing →</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 5: SPEAKING ============ -->
+    <section id="screen-speaking" class="screen">
+      <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div></div>
+      <div class="card">
+        <div class="q-head"><h2>Speaking</h2><span id="speakScorePill" class="q-counter"></span></div>
+        <p class="muted" id="speakIntro"></p>
+        <p class="muted">Your teacher will ask you these questions — they were chosen from your Listening &amp; Reading score.</p>
+        <ol id="speakPrompts" class="prompt-list big"></ol>
+        <p class="note">This part is done <strong>with your teacher</strong>. When you have finished speaking, your teacher will continue.</p>
+        <button id="speakDone" class="btn-glow">Finished speaking →</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 6: TEACHER SCORING ============ -->
+    <section id="screen-teacher" class="screen">
+      <div class="card">
+        <h2>Teacher scoring — Writing &amp; Speaking</h2>
+        <p class="muted">Score each criterion 0–3 using the rubric. These confirm the placement (they can lower it, never raise it more than one band).</p>
+
+        <h3>Writing <span id="wTaskLevel" class="pill-sm"></span></h3>
+        <p id="writeAutoNote" class="muted" hidden></p>
+        <div id="writingResponseBox" class="response-box"></div>
+        <table class="rubric" id="writeRubric"></table>
+
+        <h3>Speaking <span id="sTaskLevel" class="pill-sm"></span></h3>
+        <table class="rubric" id="speakRubric"></table>
+
+        <button id="computeBtn" class="btn-glow">Calculate placement →</button>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 7: REPORT ============ -->
+    <section id="screen-report" class="screen">
+      <div id="reportRoot"></div>
+      <div class="report-actions no-print">
+        <button id="printBtn" class="btn-secondary">🖨️ Print</button>
+        <button id="exportBtn" class="btn-secondary">⬇️ Export (JSON)</button>
+        <button id="restartBtn" class="btn-secondary">↻ New student</button>
+      </div>
+    </section>
+
+    <!-- ============ VIDEO MODAL ============ -->
+    <dialog id="videoModal" aria-labelledby="videoModalTitle">
+      <div class="modal-head">
+        <h3 id="videoModalTitle">How it works</h3>
+        <button type="button" id="videoModalClose" class="modal-close" aria-label="Close video">✕</button>
+      </div>
+      <div class="video-frame">
+        <iframe id="introFrame" title="Instruction video" allow="autoplay; fullscreen" allowfullscreen frameborder="0"></iframe>
+      </div>
+    </dialog>
+
+  </main>
+
+  <footer class="site-footer no-print">
+    <img src="assets/monglish_coloured.png" alt="" class="footer-logo" />
+    <p>© Monglish International Academy · CEFR-referenced &amp; Cambridge-aligned placement.
+       Not an official Cambridge English examination.</p>
+  </footer>
+
+  <script src="data/questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
