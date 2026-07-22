@@ -507,7 +507,10 @@
       cls:S.student.cls||S.student.school||"", book:T.book,
       sublevel:`${T.n}.${P.sub}`, cefr:T.cefr,
       listening:P.L, reading:P.R, receptive:P.receptive,
-      text:S.writingText||"", taskInstruction:w.instruction
+      text:S.writingText||"", taskInstruction:w.instruction,
+      imageDataUrl:(S.writingUpload&&S.writingUpload.dataUrl)||"",
+      imageType:(S.writingUpload&&S.writingUpload.type)||"",
+      uploadName:(S.writingUpload&&S.writingUpload.name)||""
     };
     try{
       fetch(ONLINE.writing,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)})
@@ -541,7 +544,7 @@
     };
     box.hidden=false;
     box.innerHTML=`<elevenlabs-convai agent-id="${ONLINE.agentId}" dynamic-variables='${JSON.stringify(dv).replace(/'/g,"&#39;")}'></elevenlabs-convai>
-      <p class="muted">Put on your headphones, press the call button, and talk to Mongiz. When Mongiz says goodbye, click “Finished speaking”.</p>`;
+      <p class="muted">Put on your headphones, press the call button, and talk to your English teacher. When she says goodbye, click “Finished speaking”.</p>`;
     if(!document.getElementById("elevenlabs-widget-script")){
       const s=document.createElement("script");
       s.id="elevenlabs-widget-script";
