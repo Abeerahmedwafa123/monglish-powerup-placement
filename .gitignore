@@ -1,3 +1,6 @@
 secrets.txt
 *secret*
 _claude_key.txt
+n8n.txt
+*.key
+_n8n*.txt
