@@ -9,7 +9,7 @@
      n8nBase can be overridden with ?n8n=https://... (saved to localStorage)
      so a new tunnel URL doesn't need a redeploy. */
   const ONLINE = (function(){
-    let base = "https://minds-admission-administrative-stronger.trycloudflare.com";
+    let base = "https://monglish.app.n8n.cloud";
     try {
       const q = new URLSearchParams(location.search).get("n8n");
       if (q) { localStorage.setItem("mpt_n8n", q); }
