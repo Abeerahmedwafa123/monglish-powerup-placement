@@ -4,6 +4,24 @@
 (function(){
   "use strict";
   const { CONFIG, TIERS, BANK, SPEAKING_RUBRIC, WRITING_RUBRIC } = window.MPT;
+
+  /* ---------------- online services (n8n + ElevenLabs) ----------------
+     n8nBase can be overridden with ?n8n=https://... (saved to localStorage)
+     so a new tunnel URL doesn't need a redeploy. */
+  const ONLINE = (function(){
+    let base = "https://minds-admission-administrative-stronger.trycloudflare.com";
+    try {
+      const q = new URLSearchParams(location.search).get("n8n");
+      if (q) { localStorage.setItem("mpt_n8n", q); }
+      base = localStorage.getItem("mpt_n8n") || base;
+    } catch(e){}
+    return {
+      base,
+      writing: base + "/webhook/pu-writing",
+      report:  base + "/webhook/pu-report",
+      agentId: "agent_8801ky52e80qec79nz77h7dbmm5d"
+    };
+  })();
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -76,7 +94,9 @@
     if(isNaN(age)||age<CONFIG.ageMin||age>CONFIG.ageMax){
       return fail(`Please enter an age between ${CONFIG.ageMin} and ${CONFIG.ageMax}.`);
     }
+    if(!$("#consentBox").checked){ return fail("Please tick the consent box (parent/teacher) to begin."); }
     err.hidden=true;
+    S.attemptId = "pu-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,7);
     S.student={ name, age, school:$("#stuSchool").value.trim(),
       cls:$("#stuClass").value.trim(), date:new Date().toLocaleDateString() };
     show("instructions");
@@ -473,7 +493,29 @@
       rd.readAsDataURL(f);
     }
   });
-  $("#writeDone").addEventListener("click",()=>{ S.writingText=$("#writeArea").value.trim(); goSpeaking(); });
+  $("#writeDone").addEventListener("click",()=>{
+    S.writingText=$("#writeArea").value.trim();
+    sendWritingForMarking();          // fire-and-continue; result lands in S.aiWriting
+    goSpeaking();
+  });
+  function sendWritingForMarking(){
+    if(!ONLINE.base || !S.provisional) return;
+    const P=S.provisional, T=TIERS[P.tier];
+    const w=BANK[S.writeTaskTier||P.tier].writing;
+    const payload={
+      attemptId:S.attemptId, student:S.student.name, age:S.student.age,
+      cls:S.student.cls||S.student.school||"", book:T.book,
+      sublevel:`${T.n}.${P.sub}`, cefr:T.cefr,
+      listening:P.L, reading:P.R, receptive:P.receptive,
+      text:S.writingText||"", taskInstruction:w.instruction
+    };
+    try{
+      fetch(ONLINE.writing,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)})
+        .then(r=>r.json())
+        .then(d=>{ if(d&&d.ok){ S.aiWriting=d; if($("#screen-teacher").classList.contains("active")) buildTeacherPanel(); } })
+        .catch(()=>{});
+    }catch(e){}
+  }
 
   /* SPEAKING */
   function goSpeaking(){
@@ -485,6 +527,30 @@
     sp.prompts.forEach(p=>{const li=document.createElement("li");li.textContent=p;ol.appendChild(li);});
     show("speaking");
   }
+  /* Mongiz AI examiner (ElevenLabs conversational widget) */
+  $("#speakAiBtn").addEventListener("click",()=>{
+    const box=$("#avatarBox");
+    if(!box.hidden){ box.hidden=true; box.innerHTML=""; return; }
+    const t=S.speakTaskTier||1, sp=BANK[t].speaking, T=TIERS[t];
+    const dv={
+      student_name:S.student.name||"friend",
+      age:String(S.student.age||""),
+      book:T.book, cefr:T.cefr,
+      attemptId:S.attemptId||"",
+      questions:sp.prompts.map((q,i)=>`${i+1}) ${q}`).join(" ")
+    };
+    box.hidden=false;
+    box.innerHTML=`<elevenlabs-convai agent-id="${ONLINE.agentId}" dynamic-variables='${JSON.stringify(dv).replace(/'/g,"&#39;")}'></elevenlabs-convai>
+      <p class="muted">Put on your headphones, press the call button, and talk to Mongiz. When Mongiz says goodbye, click “Finished speaking”.</p>`;
+    if(!document.getElementById("elevenlabs-widget-script")){
+      const s=document.createElement("script");
+      s.id="elevenlabs-widget-script";
+      s.src="https://unpkg.com/@elevenlabs/convai-widget-embed";
+      s.async=true; s.type="text/javascript";
+      document.body.appendChild(s);
+    }
+  });
+
   $("#speakDone").addEventListener("click",()=>{ buildTeacherPanel(); show("teacher"); });
 
   /* =====================================================================
@@ -526,7 +592,13 @@
     $("#sTaskLevel").textContent = TIERS[t].book+" level task";
     // auto-suggest the writing score from the typed submission
     const note=$("#writeAutoNote");
-    if(S.writingText){
+    if(S.aiWriting && /marked/.test(String(S.aiWriting.status||""))){
+      const total=Math.max(0,Math.min(9,Number(S.aiWriting.writingScore||0)));
+      const base=Math.floor(total/3), rem=total%3;
+      S.teacher.writing=[base+(rem>0?1:0), base+(rem>1?1:0), base];
+      note.hidden=false; note.className="muted";
+      note.textContent=`🤖 AI examiner marked this writing: ${total}/9 (saved to the results sheet). Feedback: ${String(S.aiWriting.feedback||"").slice(0,220)}`;
+    } else if(S.writingText){
       S.teacher.writing=autoScoreWriting(S.writingText, t);
       note.hidden=false; note.className="muted";
       note.textContent=`✨ Suggested score (auto-checked from the typed text): ${S.teacher.writing.reduce((a,b)=>a+b,0)}/9 — adjust any criterion if needed.`;
@@ -754,6 +826,9 @@
       localStorage.setItem(key,JSON.stringify(arr));
     }catch(e){/* storage may be disabled */}
   }
+  $("#fullReportBtn").addEventListener("click",()=>{
+    window.open(ONLINE.report + "?attempt=" + encodeURIComponent(S.attemptId||""), "_blank", "noopener");
+  });
   $("#printBtn").addEventListener("click",()=>{
     const pn=document.querySelector(".print-notes"); if(pn) pn.textContent=S.teacher.notes;
     window.print();

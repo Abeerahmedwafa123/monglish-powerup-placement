@@ -128,6 +128,11 @@
             <span class="s-play">▶</span>
           </button>
 
+          <label class="consent-row">
+            <input type="checkbox" id="consentBox" />
+            <span>I am the student's <b>parent or teacher</b> and I consent to the recording of the student's voice and the AI marking of their answers, used only for this placement.</span>
+          </label>
+
           <p id="regError" class="form-error" role="alert" hidden></p>
           <button type="submit" id="startBtn" class="btn-glow">Start my placement test →</button>
           <p class="privacy">
@@ -241,7 +246,12 @@
       <div class="card">
         <div class="q-head"><h2>Speaking</h2><span id="speakScorePill" class="q-counter"></span></div>
         <p class="muted" id="speakIntro"></p>
-        <p class="muted">Your teacher will ask you these questions — they were chosen from your Listening &amp; Reading score.</p>
+        <div class="speak-modes">
+          <button type="button" id="speakAiBtn" class="btn-secondary">🎙️ Talk to Mongiz — the AI examiner asks you these questions</button>
+          <span class="muted">…or do a normal <b>teacher interview</b> with the questions below.</span>
+        </div>
+        <div id="avatarBox" hidden></div>
+        <p class="muted">The questions were chosen from your Listening &amp; Reading score.</p>
         <ol id="speakPrompts" class="prompt-list big"></ol>
         <p class="note">This part is done <strong>with your teacher</strong>. When you have finished speaking, your teacher will continue.</p>
         <button id="speakDone" class="btn-glow">Finished speaking →</button>
@@ -270,6 +280,7 @@
     <section id="screen-report" class="screen">
       <div id="reportRoot"></div>
       <div class="report-actions no-print">
+        <button id="fullReportBtn" class="btn-secondary">📄 Full report (with AI marks)</button>
         <button id="printBtn" class="btn-secondary">🖨️ Print</button>
         <button id="exportBtn" class="btn-secondary">⬇️ Export (JSON)</button>
         <button id="restartBtn" class="btn-secondary">↻ New student</button>

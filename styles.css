@@ -173,6 +173,12 @@ dialog#videoModal::backdrop{background:rgba(5,15,28,.62);backdrop-filter:blur(3p
 .s-txt span{color:var(--ink-soft);font-size:.82rem;}
 .s-play{width:34px;height:34px;flex:0 0 auto;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:.85rem;}
 .privacy{display:flex;align-items:center;gap:.45rem;justify-content:center;color:var(--ink-soft);font-size:.82rem;margin:.8rem 0 0;}
+.consent-row{display:flex;gap:.6rem;align-items:flex-start;background:#fff7ec;border:1.5px solid #f4cf9a;
+  border-radius:12px;padding:.7rem .9rem;margin:.7rem 0 0;font-size:.85rem;color:var(--ink);cursor:pointer;line-height:1.4;}
+.consent-row input{width:20px;height:20px;flex:0 0 auto;margin-top:.1rem;accent-color:var(--orange);}
+.speak-modes{display:flex;flex-direction:column;gap:.4rem;margin:.6rem 0 1rem;}
+#avatarBox{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:1rem;margin:.4rem 0 1rem;min-height:120px;}
+#avatarBox elevenlabs-convai{display:block;min-height:90px;}
 .lock{width:15px;height:15px;fill:none;stroke:#8aa0bd;stroke-width:2;}
 .form-error{color:var(--err);font-weight:700;margin:.6rem 0 0;}
 
