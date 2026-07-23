@@ -137,7 +137,13 @@
      poor score -> one easier block to confirm, then move on. */
   const SKILL_ORDER=["listening","reading"];
   function startSkill(skill){
-    S.rec={ skill, tier:CONFIG.startTier, visited:{}, perObj:[], answered:0 };
+    let startTier=CONFIG.startTier;
+    // ADAPTIVE ENTRY: reading begins at the level the learner's LISTENING implied,
+    // so a strong listener skips the easy opener and a weaker one starts easier.
+    if(skill==="reading" && S.results.listening){
+      startTier=bandOf(equivPct("listening")).t;
+    }
+    S.rec={ skill, tier:startTier, startTier, visited:{}, perObj:[], answered:0 };
     loadTier();
   }
   function loadTier(){
@@ -368,8 +374,26 @@
   function evaluateTier(){
     const r=S.rec, pct=Math.round(r.tierCorrect/(r.tierTotal||1)*100);
     r.visited[r.tier]=pct;
+    if(r.skill==="reading"){
+      // ADAPTIVE READING: block 1 at the listening-implied level, then ONE confirming
+      // block that probes UP if strong (>=60%) or DOWN if weak — max 2 blocks.
+      if(!r.b1){
+        r.b1={tier:r.tier,pct};
+        const S2=r.tier;
+        // confirming block probes with a magnitude set by block-1 strength, so
+        // reading can still reach its true level even when it differs from listening
+        let next;
+        if(pct>=70)      next=Math.min(6,S2+2);   // very strong -> reach higher
+        else if(pct>=55) next=Math.min(6,S2+1);   // strong -> one up
+        else if(pct>=40) next=Math.max(1,S2-1);   // shaky -> one down
+        else             next=Math.max(1,S2-2);   // weak -> reach lower
+        r.candidate=next; r.tier=next; return loadTier();
+      }
+      r.b2={tier:r.tier,pct};
+      return finishSkill();
+    }
     if(!r.b1){
-      // First block (level 2) decides the ONE second block — max 2 per skill:
+      // LISTENING: first block (level 2) decides the ONE second block — max 2 per skill:
       //   70-100% -> level 6 · 50-69% -> level 4 · 40-49% -> level 3
       //   below 40% -> no second block: move on (pre-beginner placement)
       r.b1={tier:r.tier,pct};
@@ -415,8 +439,22 @@
   }
   /* Two-block adaptive estimate -> equivalent full-test % (lands inside the
      correct band of the placement criteria table). */
+  /* Adaptive-entry reading -> ability estimate on the same 0-100 band scale.
+     Each block gives an ability tier: 60% == "at that level", ±1 tier per 40 points.
+     The confirming block (chosen up/down) is weighted slightly more. */
+  function readingPct(res){
+    const abil=(t,p)=> t + (Math.max(0,Math.min(100,p))-60)/40;
+    const b1=res.b1, b2=res.b2;
+    let te = b2 ? (0.45*abil(b1.tier,b1.pct) + 0.55*abil(b2.tier,b2.pct))
+                : abil(b1.tier,b1.pct);
+    te=Math.max(1,Math.min(6.99,te));
+    const t=Math.floor(te), frac=te-t;
+    const band=BANDS.find(x=>x[2]===t)||BANDS[BANDS.length-1];
+    return Math.round(band[0]+frac*(band[1]-band[0]));
+  }
   function equivPct(skill){
     const res=S.results[skill];
+    if(skill==="reading" && res && res.b1) return readingPct(res);
     if(!res||!res.b1){                       // time-up before any block finished
       if(S.rec&&S.rec.skill===skill&&S.rec.perObj.length){
         const objs=S.rec.perObj;
