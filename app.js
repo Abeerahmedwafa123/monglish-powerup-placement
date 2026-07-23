@@ -154,6 +154,16 @@
     else { r.block=BANK[r.tier].reading.slice(); r.tierTotal=r.block.length; renderQuestion(); }
   }
   function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+  /* Limit a listening WORD dropdown to 3 choices (correct + 2 distractors) to avoid confusion.
+     Number (1-6) and letter (a-f) selects keep their full range - they are matching/ordering fields. */
+  function threeOpts(f){
+    const all=(f.options||[]).slice();
+    const singleChar=all.every(o=>/^[a-z0-9]$/i.test(String(o)));   // 1-6 or a-f -> keep all
+    if(singleChar || all.length<=3) return all;
+    const ans=f.answer;
+    const others=shuffle(all.filter(o=>o!==ans));
+    return shuffle([ans,...others.slice(0,2)]);
+  }
 
   function renderQuestion(){
     const r=S.rec, item=r.block[r.qIndex], isL=r.skill==="listening";
@@ -178,7 +188,10 @@
     const order=shuffle(item.options.map((_,i)=>i));
     r.correctIdx=order.indexOf(item.answer);
     const view=order.map(i=>item.options[i]);
-    $("#qText").textContent=item.text||(isL?"Listen and choose the correct answer.":"");
+    const rawText=item.text||(isL?"Listen and choose the correct answer.":"");
+    const em = !isL && rawText.match(/^(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)\s*(.*)$/u);
+    if(em){ $("#qText").innerHTML=`<span class="q-emoji">${em[1]}</span>${esc(em[2])}`; }
+    else  { $("#qText").textContent=rawText; }
     if(isL){ setupAudio(item); buildOptions(view, opts, /*lock only until first play this level*/!r.tierPlayed); }
     else   { buildOptions(view, opts, false); }
     progress();
@@ -314,7 +327,7 @@
         let ctrl;
         if(f.kind==="select"){
           ctrl=document.createElement("select");
-          ctrl.innerHTML=`<option value="">–</option>`+f.options.map(o=>`<option value="${o}">${o}</option>`).join("");
+          ctrl.innerHTML=`<option value="">–</option>`+threeOpts(f).map(o=>`<option value="${o}">${o}</option>`).join("");
         } else {
           ctrl=document.createElement("input"); ctrl.type="text"; ctrl.placeholder="write…"; ctrl.autocomplete="off";
         }

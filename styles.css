@@ -236,6 +236,7 @@ h2{font-size:1.7rem;} h3{color:var(--orange-2);margin-top:1.3rem;}
 .q-counter{color:var(--muted);font-weight:800;font-family:var(--font-head);}
 .audio-controls{display:flex;align-items:center;gap:1rem;margin:.5rem 0 1rem;}
 .q-text{font-size:1.35rem;font-weight:700;margin:.6rem 0 1.2rem;color:#fff;}
+.q-emoji{display:block;font-size:5.5rem;line-height:1;text-align:center;margin:.2rem auto .7rem;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25));}
 .question-visual{display:block;width:100%;max-height:520px;object-fit:contain;margin:.8rem auto 1.15rem;border-radius:16px;background:#fff;box-shadow:0 12px 28px rgba(0,0,0,.2);}
 .question-visual[hidden]{display:none;}
 
