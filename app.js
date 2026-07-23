@@ -86,21 +86,38 @@
      ===================================================================== */
   $("#regForm").addEventListener("submit",e=>{
     e.preventDefault();
+    const code=($("#stuCode").value||"").trim().toUpperCase();
     const name=$("#stuName").value.trim();
     const age=parseInt($("#stuAge").value,10);
     const err=$("#regError");
+    if(!code){ return fail("Please enter your student code to start."); }
     if(!name){ return fail("Please enter the student's name."); }
     if(isNaN(age)||age<CONFIG.ageMin||age>CONFIG.ageMax){
       return fail(`Please enter an age between ${CONFIG.ageMin} and ${CONFIG.ageMax}.`);
     }
     if(!$("#consentBox").checked){ return fail("Please tick the consent box (parent/teacher) to begin."); }
     err.hidden=true;
-    S.attemptId = "pu-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,7);
-    S.student={ name, age, school:$("#stuSchool").value.trim(),
-      cls:$("#stuClass").value.trim(), date:new Date().toLocaleDateString() };
-    show("instructions");
-    function fail(m){ err.textContent=m; err.hidden=false; $("#stuName").focus(); return false; }
+    // validate the one-time, device-locked student code before starting
+    const btn=$("#startBtn"); btn.disabled=true; const t0=btn.textContent; btn.textContent="Checking code…";
+    validateCode(code, name).then(res=>{
+      btn.disabled=false; btn.textContent=t0;
+      if(!res.ok){ return fail(res.message||"That code cannot be used. Please ask your teacher."); }
+      S.accessCode=code;
+      S.attemptId = "pu-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,7);
+      S.student={ name, age, school:$("#stuSchool").value.trim(),
+        cls:$("#stuClass").value.trim(), date:new Date().toLocaleDateString() };
+      show("instructions");
+    });
+    function fail(m){ err.textContent=m; err.hidden=false; return false; }
   });
+  /* Validate the student code (one-time use, locked to one device/IP) via n8n. */
+  function validateCode(code, student){
+    if(!ONLINE.base) return Promise.resolve({ok:true,reason:"offline"});   // fail-open if no backend configured
+    return fetch(ONLINE.base+"/webhook/pu-code",{method:"POST",headers:{"content-type":"application/json"},
+      body:JSON.stringify({code,student})})
+      .then(r=>r.json())
+      .catch(()=>({ok:false,message:"We couldn't check your code (network). Please try again."}));
+  }
 
   /* WATCH-HOW-IT-WORKS video modal (Google Drive embed) */
   const INSTRUCTION_VIDEO="https://drive.google.com/file/d/1Fol1M5tcJjV-37UvS8-iFyF_gyHpQd2H/preview";
@@ -308,7 +325,9 @@
       rowsBox=document.createElement("div"); rowsBox.className="match-rows";
       wrap.appendChild(gal); wrap.appendChild(rowsBox); box.appendChild(wrap);
     }
-    task.slots.forEach((slot,si)=>{
+    // show the EXAMPLE row first (keep original index si for scoring/answer mapping)
+    const orderedSlots=task.slots.map((slot,si)=>({slot,si})).sort((a,b)=>(b.slot.example?1:0)-(a.slot.example?1:0));
+    orderedSlots.forEach(({slot,si})=>{
       const row=document.createElement("div");
       row.className="listen-row"+(slot.example?" example":"");
       if(slot.img){

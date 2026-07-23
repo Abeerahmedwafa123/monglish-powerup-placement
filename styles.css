@@ -378,6 +378,8 @@ textarea{width:100%;background:rgba(255,255,255,.05);border:2px solid var(--line
 .rep-cols ul{margin:.3rem 0;padding-left:1.1rem;} .rep-cols li{margin:.25rem 0;}
 .flag{background:#fff4e5;border:1px solid var(--orange);color:#8a4b00;border-radius:12px;padding:.7rem 1rem;margin:.6rem 0;}
 .report-actions{text-align:center;margin-top:1rem;}
+.code-field input{letter-spacing:.12em;font-weight:800;text-transform:uppercase;}
+.field-hint{display:block;margin-top:.3rem;font-size:.8rem;color:#5a708c;}
 
 /* footer */
 .site-footer{margin-top:3rem;padding:1.5rem clamp(1rem,4vw,2.5rem);border-top:1px solid rgba(255,255,255,.08);
