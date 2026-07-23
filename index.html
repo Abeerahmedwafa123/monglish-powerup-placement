@@ -246,12 +246,17 @@
       <div class="card">
         <div class="q-head"><h2>Speaking</h2><span id="speakScorePill" class="q-counter"></span></div>
         <p class="muted" id="speakIntro"></p>
-        <div class="speak-modes">
-          <button type="button" id="speakAiBtn" class="btn-secondary">🎙️ Talk to your English teacher (AI) — she asks you these questions</button>
-          <span class="muted">…or do a normal <b>teacher interview</b> with the questions below.</span>
+        <div class="teacher-hero">
+          <img class="teacher-mongiz" src="assets/mongiz-pointing.png" alt="Your English teacher helper pointing at the Talk button">
+          <div class="teacher-hero-main">
+            <div class="teacher-bubble">Hello! I'm your <b>English teacher</b>. Put on your headphones, press the orange button, and let's have a little chat! 🎧</div>
+            <button type="button" id="speakAiBtn" class="btn-glow big-cta">🎙️ Talk to your English teacher</button>
+            <button type="button" id="micIssueBtn" class="mic-issue">🎤 My microphone isn't working</button>
+          </div>
         </div>
         <div id="avatarBox" hidden></div>
-        <p class="muted">The questions were chosen from your Listening &amp; Reading score.</p>
+        <div id="micNotice" class="mic-notice" hidden></div>
+        <p class="muted teacher-alt">The questions were chosen from your Listening &amp; Reading score. Your teacher can also ask them in a normal interview.</p>
         <ol id="speakPrompts" class="prompt-list big"></ol>
         <p class="note">This part is done <strong>with your teacher</strong>. When you have finished speaking, your teacher will continue.</p>
         <button id="speakDone" class="btn-glow">Finished speaking →</button>

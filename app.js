@@ -594,6 +594,11 @@
     $("#speakIntro").textContent=sp.intro;
     const ol=$("#speakPrompts"); ol.innerHTML="";
     sp.prompts.forEach(p=>{const li=document.createElement("li");li.textContent=p;ol.appendChild(li);});
+    // reset mic-issue state each time we enter Speaking
+    S.micTries=0;
+    const mn=$("#micNotice"); if(mn){ mn.hidden=true; mn.innerHTML=""; }
+    const mib=$("#micIssueBtn"); if(mib) mib.disabled=false;
+    const done=$("#speakDone"); if(done) done.textContent="Finished speaking →";
     show("speaking");
   }
   /* Mongiz AI examiner (ElevenLabs conversational widget) */
@@ -618,6 +623,27 @@
       s.async=true; s.type="text/javascript";
       document.body.appendChild(s);
     }
+  });
+
+  /* Mic-failure flow: after 3 tries, end the speaking test, tell the learner an
+     examiner will contact them, and flag the results row URGENT. */
+  $("#micIssueBtn").addEventListener("click",()=>{
+    S.micTries=(S.micTries||0)+1;
+    const box=$("#micNotice"); box.hidden=false;
+    if(S.micTries<3){
+      box.style.background="#fff7ec"; box.style.borderColor="#f2c68c"; box.style.color="#8a5a1b";
+      box.innerHTML=`Let's try once more (try ${S.micTries} of 3). Find the 🎤 icon in your browser's address bar and choose <b>Allow</b>, put on your headphones, then press <b>Talk to your English teacher</b> again.`;
+      return;
+    }
+    // 3rd time — give up gracefully
+    box.style.background=""; box.style.borderColor=""; box.style.color="";
+    box.innerHTML=`⚠️ Your microphone is blocked on your browser. Don't worry — an examiner will contact you to take your speaking exam. Please click <b>Submit</b> for now.`;
+    if(ONLINE.base && S.attemptId){
+      try{ fetch(ONLINE.base+"/webhook/pu-flag",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({attemptId:S.attemptId})}).catch(()=>{}); }catch(e){}
+    }
+    const av=$("#avatarBox"); if(av){ av.hidden=true; av.innerHTML=""; }
+    const done=$("#speakDone"); if(done) done.textContent="Submit →";
+    const mib=$("#micIssueBtn"); if(mib) mib.disabled=true;
   });
 
   $("#speakDone").addEventListener("click",()=>{ finishForStudent(); });

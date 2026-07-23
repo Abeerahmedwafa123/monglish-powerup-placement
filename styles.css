@@ -236,6 +236,23 @@ h2{font-size:1.7rem;} h3{color:var(--orange-2);margin-top:1.3rem;}
 .q-counter{color:var(--muted);font-weight:800;font-family:var(--font-head);}
 .audio-controls{display:flex;align-items:center;gap:1rem;margin:.5rem 0 1rem;}
 .audio-controls[hidden]{display:none;}  /* hidden attr must win over display:flex (Play button was leaking into Reading) */
+
+/* ---- Speaking: "Talk to your English teacher" hero (claymorphism) ---- */
+.teacher-hero{display:flex;gap:1.1rem;align-items:center;background:linear-gradient(145deg,#eef4fc,#dae6f6);border-radius:28px;padding:1.2rem 1.4rem;margin:.4rem 0 1rem;box-shadow:8px 8px 22px rgba(15,42,71,.15),-8px -8px 22px rgba(255,255,255,.92);}
+.teacher-mongiz{width:150px;height:auto;flex:0 0 auto;filter:drop-shadow(0 10px 14px rgba(15,42,71,.25));animation:mongiz-bob 3.2s ease-in-out infinite;}
+@keyframes mongiz-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.teacher-hero-main{flex:1;display:flex;flex-direction:column;gap:.75rem;align-items:flex-start;min-width:0;}
+.teacher-bubble{position:relative;background:#fff;border-radius:18px;padding:.8rem 1.05rem;font-family:var(--font-head,'Baloo 2',system-ui,sans-serif);font-size:1.08rem;line-height:1.4;color:#0f2a47;box-shadow:4px 4px 14px rgba(15,42,71,.13);}
+.teacher-bubble::after{content:"";position:absolute;left:-11px;top:22px;border:11px solid transparent;border-right-color:#fff;}
+.big-cta{font-size:1.28rem;padding:1rem 1.7rem;border-radius:18px;animation:cta-pulse 2s ease-in-out infinite;}
+@keyframes cta-pulse{0%,100%{box-shadow:0 0 0 0 rgba(232,133,43,.5),0 8px 18px rgba(232,133,43,.42)}50%{box-shadow:0 0 0 13px rgba(232,133,43,0),0 8px 18px rgba(232,133,43,.55)}}
+.mic-issue{background:transparent;border:0;color:#5a708c;font-size:.92rem;text-decoration:underline;cursor:pointer;padding:.45rem .2rem;min-height:44px;}
+.mic-issue:hover{color:#0f2a47;}
+.mic-notice{background:#fdecec;border:1px solid #f0b6b6;color:#8a2b2b;border-radius:14px;padding:1rem 1.15rem;margin:.6rem 0;font-size:1.02rem;line-height:1.55;}
+.mic-notice[hidden]{display:none;}
+.teacher-alt{margin-top:.5rem;}
+@media (prefers-reduced-motion:reduce){.teacher-mongiz,.big-cta{animation:none;}}
+@media (max-width:640px){.teacher-hero{flex-direction:column;text-align:center;}.teacher-mongiz{width:124px;}.teacher-hero-main{align-items:stretch;}.teacher-bubble::after{display:none;}.big-cta{width:100%;}}
 .q-text{font-size:1.35rem;font-weight:700;margin:.6rem 0 1.2rem;color:#fff;}
 .q-emoji{display:block;font-size:5.5rem;line-height:1;text-align:center;margin:.2rem auto .7rem;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25));}
 .question-visual{display:block;width:100%;max-height:520px;object-fit:contain;margin:.8rem auto 1.15rem;border-radius:16px;background:#fff;box-shadow:0 12px 28px rgba(0,0,0,.2);}
