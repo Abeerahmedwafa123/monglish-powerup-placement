@@ -156,13 +156,14 @@
   function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
   /* Limit a listening WORD dropdown to 3 choices (correct + 2 distractors) to avoid confusion.
      Number (1-6) and letter (a-f) selects keep their full range - they are matching/ordering fields. */
-  function threeOpts(f){
+  function threeOpts(f, answerFirst){
     const all=(f.options||[]).slice();
     const singleChar=all.every(o=>/^[a-z0-9]$/i.test(String(o)));   // 1-6 or a-f -> keep all
     if(singleChar || all.length<=3) return all;
     const ans=f.answer;
     const others=shuffle(all.filter(o=>o!==ans));
-    return shuffle([ans,...others.slice(0,2)]);
+    const three=[ans,...others.slice(0,2)];
+    return answerFirst ? three : shuffle(three);   // example row: given answer shown first
   }
 
   function renderQuestion(){
@@ -327,7 +328,7 @@
         let ctrl;
         if(f.kind==="select"){
           ctrl=document.createElement("select");
-          ctrl.innerHTML=`<option value="">–</option>`+threeOpts(f).map(o=>`<option value="${o}">${o}</option>`).join("");
+          ctrl.innerHTML=`<option value="">–</option>`+threeOpts(f, slot.example).map(o=>`<option value="${o}">${o}</option>`).join("");
         } else {
           ctrl=document.createElement("input"); ctrl.type="text"; ctrl.placeholder="write…"; ctrl.autocomplete="off";
         }
@@ -837,8 +838,8 @@
       </div>
       <p class="muted" style="text-align:center;margin-top:1.4rem;font-size:.8rem">CEFR-referenced &amp; Cambridge-aligned. Not an official Cambridge English examination. · Monglish International Academy</p>
     </div>`;
-    // the child never sees writing/speaking marks: hide the teacher-only "full report" button
-    const fr=$("#fullReportBtn"); if(fr) fr.style.display="none";
+    // student result screen shows no action buttons (Print / Export / New student removed)
+    const acts=document.querySelector(".report-actions"); if(acts) acts.style.display="none";
     show("report"); saveLocal();
   }
 
