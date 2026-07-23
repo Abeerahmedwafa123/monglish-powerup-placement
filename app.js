@@ -535,6 +535,21 @@
     sendWritingForMarking();          // fire-and-continue; result lands in S.aiWriting
     goSpeaking();
   });
+  /* Block score AT the placed level: the tested block nearest the placed tier
+     (the confirming/2nd block wins ties). Feeds the teacher-side guide placement. */
+  function atLevelPct(skill, tier){
+    const res=S.results[skill]; if(!res) return null;
+    const tp=res.tierPct||{}; const b2t=res.b2&&res.b2.tier;
+    const entries=Object.keys(tp).map(t=>({t:Number(t),pct:tp[t]}));
+    if(!entries.length) return null;
+    entries.sort((a,b)=>{
+      const d=Math.abs(a.t-tier)-Math.abs(b.t-tier);
+      if(d!==0) return d;
+      if(a.t===b2t) return -1; if(b.t===b2t) return 1;   // confirming block wins ties
+      return b.t-a.t;
+    });
+    return Math.round(entries[0].pct);
+  }
   function sendWritingForMarking(){
     if(!ONLINE.base || !S.provisional) return;
     const P=S.provisional, T=TIERS[P.tier];
@@ -544,6 +559,7 @@
       cls:S.student.cls||S.student.school||"", book:T.book,
       sublevel:`${T.n}.${P.sub}`, cefr:T.cefr,
       listening:P.L, reading:P.R, receptive:P.receptive,
+      listeningAt:atLevelPct("listening",P.tier), readingAt:atLevelPct("reading",P.tier), placedTier:P.tier,
       text:S.writingText||"", taskInstruction:w.instruction,
       imageDataUrl:(S.writingUpload&&S.writingUpload.dataUrl)||"",
       imageType:(S.writingUpload&&S.writingUpload.type)||"",
