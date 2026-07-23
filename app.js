@@ -77,9 +77,8 @@
     },1000);
   }
   function forceFinish(){
-    // time up -> jump to teacher scoring with whatever we have
-    if(!S.provisional) computeProvisional();
-    buildTeacherPanel(); show("teacher");
+    // time up -> go straight to the student result (writing/speaking marked in the sheet)
+    finishForStudent();
   }
 
   /* =====================================================================
@@ -554,7 +553,7 @@
     }
   });
 
-  $("#speakDone").addEventListener("click",()=>{ buildTeacherPanel(); show("teacher"); });
+  $("#speakDone").addEventListener("click",()=>{ finishForStudent(); });
 
   /* =====================================================================
      TEACHER SCORING PANEL
@@ -645,19 +644,7 @@
       c2.appendChild(wrap);
     });
   }
-  $("#computeBtn").addEventListener("click",()=>{
-    const wSum=S.teacher.writing.reduce((a,b)=>a+b,0);
-    const sSum=S.teacher.speaking.reduce((a,b)=>a+b,0);
-    const warn=[];
-    if(wSum===0 && S.writingUpload && !S.writingText)
-      warn.push("Writing was uploaded as a FILE — the app cannot mark handwriting.\nPlease read it and set the three Writing criteria (0–3) yourself");
-    else if(wSum===0 && S.writingText)
-      warn.push("The typed writing was too short to earn marks — set the Writing criteria yourself if you disagree");
-    if(sSum===0) warn.push("Speaking has no score (0/9) — set the three Speaking criteria after the interview");
-    if(warn.length && !confirm(warn.join(".\n\n")+".\n\nContinue anyway with these zeros?")) return;
-    if(S.timer) clearInterval(S.timer);
-    computeFinal(); renderReport(); show("report"); saveLocal();
-  });
+  $("#computeBtn").addEventListener("click",()=>{ finishForStudent(); });
 
   /* =====================================================================
      FINAL PLACEMENT + SAFEGUARDS
@@ -722,6 +709,44 @@
     if(r.tierPct[tier]!=null) return r.tierPct[tier];
     // fall back to best visited
     const vals=Object.values(r.tierPct); return vals.length?Math.max(...vals):0;
+  }
+
+  /* =====================================================================
+     STUDENT RESULT  (child sees Listening, Reading & suggested level ONLY —
+     Writing & Speaking are AI-marked into the results sheet, never shown here)
+     ===================================================================== */
+  function finishForStudent(){
+    if(S.timer) clearInterval(S.timer);
+    if(!S.provisional) computeProvisional();
+    const P=S.provisional, T=TIERS[P.tier];
+    const subLabel=`${T.n}.${P.sub}`;
+    const first=(S.student.name||"").trim().split(/\s+/)[0]||"";
+    // light local record for export; the authoritative writing/speaking marks live in the results sheet
+    FINAL={ student:S.student, scores:{listening:P.L,reading:P.R}, tier:P.tier, sub:P.sub,
+      book:T.book, cefr:T.cefr, stage:T.stage, color:T.color, receptive:P.receptive, band:P.band, studentView:true };
+    $("#reportRoot").innerHTML=`
+    <div class="report student-result">
+      <div class="rep-header">
+        <img src="assets/monglish_coloured.png" alt="Monglish">
+        <div style="text-align:right"><h2 style="margin:0">Well done${first?", "+esc(first):""}! 🎉</h2><div class="muted">${esc(S.student.date||"")}</div></div>
+      </div>
+      <p class="muted" style="text-align:center;font-size:1.05rem">Here is your English result today:</p>
+      <div class="score-grid">
+        <div class="score-tile"><div class="v">${P.L}%</div><div class="l">Listening</div></div>
+        <div class="score-tile"><div class="v">${P.R}%</div><div class="l">Reading</div></div>
+      </div>
+      <div class="placement-hero" style="margin-top:1.2rem">
+        <div class="book-chip" style="background:${T.color}">${T.book}<br><span style="font-size:.9rem;font-weight:700">${subLabel}</span></div>
+        <div class="meta">
+          <div><b>Suggested class: ${T.cefr} · ${T.stage}</b></div>
+          <div class="muted">Your teacher will look at your writing and speaking and welcome you to your class. 🌟</div>
+        </div>
+      </div>
+      <p class="muted" style="text-align:center;margin-top:1.4rem;font-size:.8rem">CEFR-referenced &amp; Cambridge-aligned. Not an official Cambridge English examination. · Monglish International Academy</p>
+    </div>`;
+    // the child never sees writing/speaking marks: hide the teacher-only "full report" button
+    const fr=$("#fullReportBtn"); if(fr) fr.style.display="none";
+    show("report"); saveLocal();
   }
 
   /* =====================================================================
