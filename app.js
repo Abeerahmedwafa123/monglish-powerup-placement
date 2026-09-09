@@ -322,8 +322,7 @@
     r.played=0; r.playedFull=false; r.tStart=Date.now();
     stopAudio();
     const vis=$("#qVisual");
-    if(task.image){ vis.src=task.image; vis.alt=task.imageAlt||"Pictures for this listening activity"; vis.hidden=false; }
-    else { vis.hidden=true; vis.removeAttribute("src"); }
+    vis.hidden=true; vis.removeAttribute("src"); vis.alt="";   // sheet is rendered beside the answers below
     $("#qText").textContent=task.instruction||"Listen and answer.";
     setupAudioSimple(task.audioSrc);
     const box=$("#options"); box.innerHTML="";
@@ -332,9 +331,11 @@
       wb.innerHTML=`<span>Word box:</span> ${task.wordbox.map(w=>`<b>${w}</b>`).join(" · ")}`;
       box.appendChild(wb);
     }
-    /* matching task: photo gallery pinned beside the questions */
-    let rowsBox=box;
+    /* The six items sit in a 2-part grid - items 1-3 down the left, 4-6 down the
+       right - so the whole exercise is visible without scrolling while the audio plays. */
+    let rowsBox=document.createElement("div"); rowsBox.className="listen-grid";
     if(task.matchImages){
+      /* matching task: photo gallery pinned beside the questions */
       const wrap=document.createElement("div"); wrap.className="match-wrap";
       const gal=document.createElement("div"); gal.className="match-gallery";
       task.matchImages.forEach(m=>{
@@ -342,8 +343,19 @@
         card.innerHTML=`<span class="g-letter">${m.l}</span><img src="${m.img}" alt="Picture ${m.l}" loading="lazy"><span class="g-chip" hidden></span>`;
         gal.appendChild(card);
       });
-      rowsBox=document.createElement("div"); rowsBox.className="match-rows";
+      rowsBox.classList.add("match-rows");
       wrap.appendChild(gal); wrap.appendChild(rowsBox); box.appendChild(wrap);
+    } else if(task.image){
+      /* one worksheet page: pin it beside the answers so nothing scrolls out of view */
+      const wrap=document.createElement("div"); wrap.className="sheet-wrap";
+      const fig=document.createElement("div"); fig.className="sheet-figure";
+      const im=document.createElement("img");
+      im.alt=task.imageAlt||"Pictures for this listening activity";
+      im.decoding="async"; im.src=task.image;      // eager: this sheet IS the question
+      fig.appendChild(im);
+      wrap.appendChild(fig); wrap.appendChild(rowsBox); box.appendChild(wrap);
+    } else {
+      box.appendChild(rowsBox);
     }
     // show the EXAMPLE row first (keep original index si for scoring/answer mapping)
     const orderedSlots=task.slots.map((slot,si)=>({slot,si})).sort((a,b)=>(b.slot.example?1:0)-(a.slot.example?1:0));
