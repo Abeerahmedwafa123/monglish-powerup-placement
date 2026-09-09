@@ -672,12 +672,24 @@
     const box=$("#avatarBox");
     if(!box.hidden){ box.hidden=true; box.innerHTML=""; return; }
     const t=S.speakTaskTier||1, sp=BANK[t].speaking, T=TIERS[t];
+    /* ADAPTIVE SPEAKING: the ladder is resolved HERE, not by the agent. We hand it
+       three ready-made blocks of three questions - one at the placed book, one a
+       single step up, one a single step down - so the examiner only has to judge
+       the child and pick a block, never work out which book comes next. */
+    const up=Math.min(6,t+1), down=Math.max(1,t-1);
+    const block=(tier,from)=>BANK[tier].speaking.prompts.slice(from,from+3)
+                              .map((q,i)=>`${i+1}) ${q}`).join("  ");
     const dv={
       student_name:S.student.name||"friend",
       age:String(S.student.age||""),
       book:T.book, cefr:T.cefr,
       attemptId:S.attemptId||"",
-      questions:sp.prompts.map((q,i)=>`${i+1}) ${q}`).join(" ")
+      questions:sp.prompts.map((q,i)=>`${i+1}) ${q}`).join(" "),
+      book_at:T.book, book_up:TIERS[up].book, book_down:TIERS[down].book,
+      questions_at:block(t,0),
+      questions_stay:block(t,3),
+      questions_up:block(up,0),
+      questions_down:block(down,0)
     };
     box.hidden=false;
     box.innerHTML=`<elevenlabs-convai agent-id="${ONLINE.agentId}" dynamic-variables='${JSON.stringify(dv).replace(/'/g,"&#39;")}'></elevenlabs-convai>
