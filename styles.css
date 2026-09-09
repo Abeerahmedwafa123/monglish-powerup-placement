@@ -372,6 +372,17 @@ input.lr-input{min-width:130px;}
 /* writing / speaking */
 .starter{background:rgba(255,255,255,.05);border-left:4px solid var(--orange);padding:.8rem 1rem;border-radius:8px;font-style:italic;}
 .prompt-list{padding-left:1.2rem;} .prompt-list.big li{font-size:1.15rem;margin:.6rem 0;}
+/* live adaptive question feed */
+.speak-waiting{margin:.6rem 0 0;font-style:italic;}
+.prompt-list.live{list-style:none;padding-left:0;counter-reset:liveq;}
+.prompt-list.live li{counter-increment:liveq;position:relative;padding:.7rem .9rem .7rem 3rem;margin:.5rem 0;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;
+  opacity:.62;transition:opacity .25s ease,border-color .25s ease,background .25s ease;}
+.prompt-list.live li::before{content:counter(liveq);position:absolute;left:.75rem;top:.7rem;
+  width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;
+  font-family:var(--font-head);font-weight:700;font-size:.85rem;display:grid;place-items:center;}
+.prompt-list.live li.current{opacity:1;border-color:var(--orange);background:rgba(232,133,43,.12);}
+.prompt-list.live li.current::before{background:var(--orange);}
 textarea{width:100%;background:rgba(255,255,255,.05);border:2px solid var(--line);color:var(--text);
   border-radius:14px;padding:.9rem 1rem;font-family:inherit;font-size:1.05rem;}
 .word-count{text-align:right;color:var(--muted);font-size:.85rem;margin-top:.3rem;}

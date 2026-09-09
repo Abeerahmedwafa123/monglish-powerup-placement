@@ -652,14 +652,56 @@
     }catch(e){}
   }
 
+  /* ---------------- live question display (adaptive speaking) ----------------
+     The examiner calls the display_question client tool immediately before it
+     speaks each question. We show them one under another, newest highlighted,
+     so the child can read along and the teacher can see exactly what was asked
+     - including the level the examiner moved to. */
+  function resetLiveQuestions(){
+    S.askedQuestions=[];
+    const ol=$("#speakPrompts"); if(!ol) return;
+    ol.innerHTML="";
+    ol.classList.add("live");
+    const w=$("#speakWaiting"); if(w) w.hidden=false;
+  }
+  function renderLiveQuestion(text, number){
+    const ol=$("#speakPrompts"); if(!ol) return;
+    const clean=String(text||"").trim();
+    if(!clean) return;
+    if(S.askedQuestions && S.askedQuestions.some(q=>q.text===clean)) return;  // no duplicates on a repeat
+    (S.askedQuestions=S.askedQuestions||[]).push({ n:Number(number)||S.askedQuestions.length+1, text:clean });
+    const w=$("#speakWaiting"); if(w) w.hidden=true;
+    $$("#speakPrompts li.current").forEach(li=>li.classList.remove("current"));
+    const li=document.createElement("li");
+    li.className="current";
+    li.textContent=clean;
+    ol.appendChild(li);
+    try{ li.scrollIntoView({block:"nearest",behavior:"smooth"}); }catch(e){}
+  }
+  /* Which book the examiner actually settled on - useful for the teacher panel
+     because an adaptive chat may not stay on the placed book. */
+  function askedBook(){
+    const qs=(S.askedQuestions||[]).map(q=>q.text);
+    if(!qs.length) return null;
+    let best=null, bestHits=0;
+    for(let t=1;t<=6;t++){
+      const set=BANK[t].speaking.prompts;
+      const hits=qs.filter(q=>set.indexOf(q)>=0).length;
+      if(hits>bestHits){ bestHits=hits; best=t; }
+    }
+    return best;
+  }
+
   /* SPEAKING */
   function goSpeaking(){
     setTabs("speaking");
     $("#speakScorePill").textContent=`Your score: L ${skillPct("listening")}% · R ${skillPct("reading")}%`;
     const t=S.speakTaskTier, sp=BANK[t].speaking;
     $("#speakIntro").textContent=sp.intro;
-    const ol=$("#speakPrompts"); ol.innerHTML="";
-    sp.prompts.forEach(p=>{const li=document.createElement("li");li.textContent=p;ol.appendChild(li);});
+    /* The examiner is adaptive, so the questions it will ask are not known in
+       advance: it announces each one through the display_question client tool
+       and we render them here as they are asked. */
+    resetLiveQuestions();
     // reset mic-issue state each time we enter Speaking
     S.micTries=0;
     const mn=$("#micNotice"); if(mn){ mn.hidden=true; mn.innerHTML=""; }
@@ -694,6 +736,16 @@
     box.hidden=false;
     box.innerHTML=`<elevenlabs-convai agent-id="${ONLINE.agentId}" dynamic-variables='${JSON.stringify(dv).replace(/'/g,"&#39;")}'></elevenlabs-convai>
       <p class="muted">Put on your headphones, press the call button, and talk to your English teacher. When she says goodbye, click “Finished speaking”.</p>`;
+    /* the widget asks for client tools each time a call starts */
+    box.querySelectorAll("elevenlabs-convai").forEach(el=>{
+      el.addEventListener("elevenlabs-convai:call",ev=>{
+        try{
+          ev.detail.config.clientTools = {
+            display_question: ({question, number}) => { renderLiveQuestion(question, number); return "shown"; }
+          };
+        }catch(e){}
+      });
+    });
     if(!document.getElementById("elevenlabs-widget-script")){
       const s=document.createElement("script");
       s.id="elevenlabs-widget-script";
