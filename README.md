@@ -61,6 +61,18 @@ Simulation across ability levels: **~90% exact book match, ~96% within one sub-l
 - **Listening answers:** one field per item — the **number** (1–6) for Power Up 1–2, the **a / b** choice for Power Up 3–4, and the **picture letter** (a–f) for Power Up 5–6. Each exercise is marked out of **5** (the example item is not scored), matching the paper worksheet.
 - **Thresholds/weights:** all in the `CONFIG` object at the top of `data/questions.js`.
 
+## Deploying a change (IMPORTANT)
+
+GitHub Pages serves `app.js`, `styles.css` and `data/questions.js` with
+`Cache-Control: max-age=600`, and browsers hold them longer than that. A learner
+mid-cycle can therefore run a stale `app.js` against a fresh `index.html`, which
+breaks the page in confusing ways.
+
+So `index.html` requests those three files with a `?v=` version tag. **Whenever you
+change app.js, styles.css or data/questions.js, bump the tag in all three tags in
+`index.html`** (use the date, e.g. `?v=2026-09-09b`). That is what forces every
+browser to pick the new file up immediately.
+
 ## Staff test code
 
 **`MPU-TEST`** (or `MPU-TEST-XX`, e.g. `MPU-TEST-SOHA`) is a permanent QA code.
