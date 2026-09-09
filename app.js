@@ -206,7 +206,7 @@
   function renderQuestion(){
     const r=S.rec, item=r.block[r.qIndex], isL=r.skill==="listening";
     $("#secTitle").textContent = isL?"Listening":"Reading";
-    $("#qCounter").textContent = `Question ${r.answered+1} of 10`;
+    $("#qCounter").textContent = `Question ${r.qIndex+1} of ${r.tierTotal} \u00b7 Part ${r.b1?2:1}`;
     const ac=$("#audioControls"); ac.hidden=!isL;         // Reading: no audio button
     const visual=$("#qVisual");
     if(item.imageSrc){
@@ -452,6 +452,15 @@
         else if(pct>=55) next=Math.min(6,S2+1);   // strong -> one up
         else if(pct>=40) next=Math.max(1,S2-1);   // shaky -> one down
         else             next=Math.max(1,S2-2);   // weak -> reach lower
+        /* At the ends of the ladder the clamp above lands back on the block the
+           learner has just answered, which would re-serve the same five questions.
+           At the ceiling, confirm with the level below instead; at the floor there
+           is nothing easier left to ask, so stop after the one block. */
+        if(next===S2 || r.visited[next]!=null){
+          const below=S2-1;
+          if(pct>=55 && below>=1 && r.visited[below]==null) next=below;
+          else return finishSkill();
+        }
         r.candidate=next; r.tier=next; return loadTier();
       }
       r.b2={tier:r.tier,pct};
