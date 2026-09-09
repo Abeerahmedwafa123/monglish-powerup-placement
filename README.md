@@ -61,6 +61,22 @@ Simulation across ability levels: **~90% exact book match, ~96% within one sub-l
 - **Listening answers:** one field per item — the **number** (1–6) for Power Up 1–2, the **a / b** choice for Power Up 3–4, and the **picture letter** (a–f) for Power Up 5–6. Each exercise is marked out of **5** (the example item is not scored), matching the paper worksheet.
 - **Thresholds/weights:** all in the `CONFIG` object at the top of `data/questions.js`.
 
+## Staff test code
+
+**`MPU-TEST`** (or `MPU-TEST-XX`, e.g. `MPU-TEST-SOHA`) is a permanent QA code.
+It is **reusable** — it skips the one-time device-locked check, so running it never
+spends a real student code, and it works on any device as often as you like.
+
+The attempt **is** recorded in the results sheet, labelled so it cannot be mistaken
+for a student placement: the name column reads **"TEST TRIAL - Dr. Abir Wafa"**, the
+class column notes the name that was typed in, the attempt id is prefixed `TEST-`,
+and the payload carries `test: true`. A yellow **TEST TRIAL** badge shows in the
+header for the whole run. The row appears once the Writing step is submitted.
+
+Note: this code lives in `app.js`, so anyone reading the page source could find it.
+That is an accepted trade-off — every run it produces is labelled, so misuse is
+visible in the sheet. To change or retire it, edit `TEST_CODE` in `app.js`.
+
 ## Privacy
 
 - All data stays **in the browser** — results are kept in `localStorage` (key `mpt_results`) and can be exported as a JSON file.

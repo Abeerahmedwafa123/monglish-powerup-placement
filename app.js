@@ -22,6 +22,23 @@
       agentId: "agent_8801ky52e80qec79nz77h7dbmm5d"
     };
   })();
+  /* ---------------- staff test code ----------------
+     MPU-TEST (or MPU-TEST-XX) is a permanent, reusable code for staff QA.
+     It skips the one-time student-code check, so no real student code is spent,
+     and the attempt IS written to the results sheet - clearly labelled as a
+     testing trial by Dr. Abir so it can never be read as a student placement. */
+  const TEST_CODE=/^MPU-TEST(-[A-Za-z0-9]{1,10})?$/i;
+  const TEST_LABEL="TEST TRIAL - Dr. Abir Wafa";
+  const isTestCode=c=>TEST_CODE.test(String(c||"").trim());
+  function showTestBadge(){
+    const meta=document.querySelector(".header-meta");
+    if(!meta || document.getElementById("testBadge")) return;
+    const b=document.createElement("span");
+    b.id="testBadge"; b.className="test-badge";
+    b.textContent="TEST TRIAL - not a student result";
+    meta.insertBefore(b, meta.firstChild);
+  }
+
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
 
@@ -103,15 +120,18 @@
       btn.disabled=false; btn.textContent=t0;
       if(!res.ok){ return fail(res.message||"That code cannot be used. Please ask your teacher."); }
       S.accessCode=code;
-      S.attemptId = "pu-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,7);
+      S.isTest=isTestCode(code);
+      S.attemptId = (S.isTest?"TEST-":"") + "pu-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,7);
       S.student={ name, age, school:$("#stuSchool").value.trim(),
         cls:$("#stuClass").value.trim(), date:new Date().toLocaleDateString() };
+      if(S.isTest) showTestBadge();
       show("instructions");
     });
     function fail(m){ err.textContent=m; err.hidden=false; return false; }
   });
   /* Validate the student code (one-time use, locked to one device/IP) via n8n. */
   function validateCode(code, student){
+    if(isTestCode(code)) return Promise.resolve({ok:true,reason:"staff-test"});  // reusable, never consumed
     if(!ONLINE.base) return Promise.resolve({ok:true,reason:"offline"});   // fail-open if no backend configured
     return fetch(ONLINE.base+"/webhook/pu-code",{method:"POST",headers:{"content-type":"application/json"},
       body:JSON.stringify({code,student})})
@@ -588,8 +608,13 @@
     const P=S.provisional, T=TIERS[P.tier];
     const w=BANK[S.writeTaskTier||P.tier].writing;
     const payload={
-      attemptId:S.attemptId, student:S.student.name, age:S.student.age,
-      cls:S.student.cls||S.student.school||"", book:T.book,
+      attemptId:S.attemptId,
+      student: S.isTest ? TEST_LABEL : S.student.name,
+      age:S.student.age,
+      cls: S.isTest ? ("Testing trial - entered as " + (S.student.name||"-"))
+                    : (S.student.cls||S.student.school||""),
+      test: !!S.isTest, testedBy: S.isTest ? "Dr. Abir Wafa" : "",
+      book:T.book,
       sublevel:`${T.n}.${P.sub}`, cefr:T.cefr,
       listening:P.L, reading:P.R, receptive:P.receptive,
       listeningAt:atLevelPct("listening",P.tier), readingAt:atLevelPct("reading",P.tier), placedTier:P.tier,
@@ -659,7 +684,7 @@
     box.style.background=""; box.style.borderColor=""; box.style.color="";
     box.innerHTML=`⚠️ Your microphone is blocked on your browser. Don't worry — an examiner will contact you to take your speaking exam. Please click <b>Submit</b> for now.`;
     if(ONLINE.base && S.attemptId){
-      try{ fetch(ONLINE.base+"/webhook/pu-flag",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({attemptId:S.attemptId})}).catch(()=>{}); }catch(e){}
+      try{ fetch(ONLINE.base+"/webhook/pu-flag",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({attemptId:S.attemptId,test:!!S.isTest})}).catch(()=>{}); }catch(e){}
     }
     const av=$("#avatarBox"); if(av){ av.hidden=true; av.innerHTML=""; }
     const done=$("#speakDone"); if(done) done.textContent="Submit →";

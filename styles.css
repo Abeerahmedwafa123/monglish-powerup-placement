@@ -46,6 +46,9 @@ h1,h2,h3{font-family:var(--font-head);line-height:1.12;margin:.1rem 0 .6rem;}
 .header-meta{display:flex;align-items:center;gap:1rem;}
 .timer{font-family:var(--font-head);font-variant-numeric:tabular-nums;font-weight:700;font-size:1.1rem;
   background:var(--orange);color:#3a1f00;padding:.3rem .9rem;border-radius:999px;box-shadow:var(--glow);}
+.test-badge{display:inline-flex;align-items:center;background:#fde68a;color:#7c2d12;
+  border:1px solid #f59e0b;border-radius:999px;padding:.3rem .75rem;
+  font-weight:800;font-size:.78rem;letter-spacing:.02em;white-space:nowrap;}
 .timer.warn{background:var(--err);color:#fff;animation:pulse 1s infinite;}
 
 /* help popover */
