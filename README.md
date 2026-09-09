@@ -12,9 +12,8 @@ It places a learner across the whole Power Up ladder — **Power Up 1 (Pre-A1 St
 Just open **`index.html`** in a modern browser (Chrome, Edge, Firefox, Safari).
 No installation, no server, no internet needed — everything runs locally.
 
-If Listening has no sound: the app reads the questions aloud using your browser's
-built-in speech (Web Speech API). Allow it a moment to load voices, and use
-headphones. (See "Listening audio" below to use recorded audio instead.)
+Use headphones. Listening plays recorded American-accent audio from `audio/`;
+each track can be played up to **3 times** (one play + two replays).
 
 ## Folder structure
 
@@ -25,7 +24,7 @@ monglish-placement-app/
 ├── app.js              adaptive engine, scoring, reports
 ├── data/questions.js   question bank + config (edit content here)
 ├── assets/             monglish_coloured.png · monglish_white.png
-├── audio/              (optional) drop recorded listening mp3s here
+├── audio/              listening mp3s (American accent) + LISTENING-SCRIPTS.md
 └── README.md
 ```
 
@@ -55,10 +54,11 @@ Simulation across ability levels: **~90% exact book match, ~96% within one sub-l
 
 ## Customising
 
-- **Instruction video:** the hero has a **"▶ Watch how it works"** button that opens a popup. Put your video at **`assets/instructions.mp4`** and it plays there automatically (until then a placeholder shows). Close with ✕, click outside, or Esc.
+- **Instruction video:** `assets/instructions.mp4` (720p, self-hosted — no Google Drive / YouTube dependency) with `assets/instructions-poster.jpg` as the still. It plays in two places: the **"▶ Watch how it works"** popup on the landing screen (close with ✕, click outside, or Esc) and inline on the **Instructions** screen. To swap it, replace those two files — no code change needed.
 - **Mascot / speech bubble:** edit the `.mascot-col` block in `index.html` (image + the "Hi! I'm Mongiz" `.speech` text).
 - **Questions:** edit `data/questions.js`. Each tier `1..6` = Power Up `1..6`. Items carry metadata (skill, objective, answer, level) used by the engine but never shown to the learner.
-- **Listening audio:** by default the browser speaks each item. To use a recorded file, add `audioSrc:"audio/xxx.mp3"` to a listening item (engine support can be enabled in `app.js` — see the `speak()`/play handler).
+- **Listening audio:** each tier plays `audio/listen-N.mp3` via its `audioSrc`. All six tracks are **American-accent** recordings made with ElevenLabs using the Monglish brand voices (Mongiz, Imy, Mother, Father, Grandma, Grandpa, Monglish Narrator). Full scripts, casting and re-recording instructions are in **`audio/LISTENING-SCRIPTS.md`**.
+- **Listening answers:** one field per item — the **number** (1–6) for Power Up 1–2, the **a / b** choice for Power Up 3–4, and the **picture letter** (a–f) for Power Up 5–6. Each exercise is marked out of **5** (the example item is not scored), matching the paper worksheet.
 - **Thresholds/weights:** all in the `CONFIG` object at the top of `data/questions.js`.
 
 ## Privacy

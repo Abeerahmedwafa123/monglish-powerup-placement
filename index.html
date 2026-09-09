@@ -160,19 +160,20 @@
         <div class="instruction-video-block">
           <h3>Watch Mongiz tell you the instructions</h3>
           <div class="instruction-video-frame">
-            <iframe id="introVideoMain"
-              src="https://drive.google.com/file/d/1Fol1M5tcJjV-37UvS8-iFyF_gyHpQd2H/preview"
+            <video id="introVideoMain"
+              src="assets/instructions.mp4"
+              poster="assets/instructions-poster.jpg"
               title="Mongiz placement test instructions"
-              allow="autoplay; fullscreen" allowfullscreen frameborder="0" loading="lazy"></iframe>
+              controls playsinline preload="metadata"></video>
           </div>
         </div>
         <ul class="steps">
           <li><span class="step-ico">1</span> There are <strong>4 skills</strong>: Listening, Reading, Writing and Speaking.</li>
-          <li><span class="step-ico">2</span> The test is <strong>adaptive</strong> — do well and the questions get harder; answers are chosen from dropdown menus.</li>
-          <li><span class="step-ico">3</span> Your <strong>Writing and Speaking</strong> tasks are then chosen to match your score.</li>
-          <li><span class="step-ico">4</span> For Listening, press <strong>▶ Play</strong> to hear each exercise (replay twice).</li>
-          <li><span class="step-ico">5</span> For Writing you can <strong>type</strong> — or <strong>upload a photo</strong> of your handwriting (or a PDF/Word file).</li>
-          <li><span class="step-ico">6</span> Writing and Speaking are checked by your <strong>teacher</strong>. You have <strong>60 minutes</strong>.</li>
+          <li><span class="step-ico">2</span> The test is <strong>adaptive</strong> — answer well and the next questions get harder, so it finds your real level.</li>
+          <li><span class="step-ico">3</span> <strong>Listening</strong>: 2 exercises. Press <strong>▶ Play</strong>, then choose the <strong>number</strong> for each picture from the dropdown — you can listen up to <strong>3 times</strong>.</li>
+          <li><span class="step-ico">4</span> <strong>Reading</strong>: 10 questions — just <strong>tap the answer</strong> you think is right.</li>
+          <li><span class="step-ico">5</span> Your <strong>Writing and Speaking</strong> tasks are then chosen to match your score. For Writing you can <strong>type</strong>, or <strong>upload a photo</strong> of your handwriting (a PDF or Word file is fine too).</li>
+          <li><span class="step-ico">6</span> <strong>Speaking</strong> is done out loud. Writing and Speaking are marked with <strong>AI help and confirmed by your teacher</strong>. Most students finish in <strong>30–40 minutes</strong> — you have up to <strong>60</strong>.</li>
         </ul>
         <button id="beginBtn" class="btn-glow">I'm ready — let's go! →</button>
       </div>
@@ -308,7 +309,9 @@
         <button type="button" id="videoModalClose" class="modal-close" aria-label="Close video">✕</button>
       </div>
       <div class="video-frame">
-        <iframe id="introFrame" title="Instruction video" allow="autoplay; fullscreen" allowfullscreen frameborder="0"></iframe>
+        <video id="introFrame" title="Instruction video"
+          src="assets/instructions.mp4" poster="assets/instructions-poster.jpg"
+          controls playsinline preload="metadata"></video>
       </div>
     </dialog>
 

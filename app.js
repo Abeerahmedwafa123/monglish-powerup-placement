@@ -119,13 +119,13 @@
       .catch(()=>({ok:false,message:"We couldn't check your code (network). Please try again."}));
   }
 
-  /* WATCH-HOW-IT-WORKS video modal (Google Drive embed) */
-  const INSTRUCTION_VIDEO="https://drive.google.com/file/d/1Fol1M5tcJjV-37UvS8-iFyF_gyHpQd2H/preview";
+  /* WATCH-HOW-IT-WORKS video modal (local file, assets/instructions.mp4) */
+  const INSTRUCTION_VIDEO="assets/instructions.mp4";
   (function(){
     const vm=$("#videoModal"); if(!vm||!vm.showModal) return;
     const fr=$("#introFrame");
-    const open=()=>{ if(fr) fr.src=INSTRUCTION_VIDEO; vm.showModal(); };
-    const close=()=>{ if(fr) fr.src="about:blank"; if(vm.open) vm.close(); };  // blank src stops playback
+    const open=()=>{ vm.showModal(); if(fr){ try{ fr.currentTime=0; fr.play(); }catch(e){} } };
+    const close=()=>{ if(fr){ try{ fr.pause(); }catch(e){} } if(vm.open) vm.close(); };  // pause stops playback
     const wb=$("#watchBtn"); if(wb) wb.addEventListener("click",open);
     $("#videoModalClose").addEventListener("click",close);
     vm.addEventListener("click",e=>{ if(e.target===vm) close(); });

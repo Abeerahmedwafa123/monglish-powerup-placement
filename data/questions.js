@@ -39,12 +39,8 @@ const N6=["1","2","3","4","5","6"], AF=["a","b","c","d","e","f"], AB=["a","b"];
 const num=(label,answer)=>({kind:"select",label:label||"No.",options:N6,answer});
 const pick=(label,opts,answer)=>({kind:"select",label,options:opts,answer});
 const write=(label,accept)=>({kind:"text",label:label||"Write",accept});
-/* dropdown word lists (answers + distractors) */
-const W1=["brother","dad","grandma","grandpa","mum","sister"];
-const W2=["don't have to take","has to buy","has to catch","has to get","have to get","have to visit"];
-const W3=["map","postcard","pyjamas","sandcastle","stamp","suitcase","tent","trainers"];
-const W4=["brush","chair","comb","fridge","key","mirror","oven","phone","shampoo","shelf","soap","toilet"];
-const W6=["architect","cleaner","hairdresser","librarian","programmer","sailor"];
+/* Listening is answered with ONE field per item (number / a-b / picture letter).
+   The old word & phrase dropdowns were removed - the audio carries the vocabulary. */
 
 const BANK = {
   /* ===== TIER 1 — Pre-A1 / PU1 — family (listen & number, then write) ===== */
@@ -52,14 +48,14 @@ const BANK = {
     listening: {
       type:"interactive", obj:"family",
       audioSrc:"audio/listen-1.mp3",
-      instruction:"Listen and number the people 1–6 in the order you hear them. Then choose the family word.",
+      instruction:"Listen and number the people 1–6 in the order you hear them.",
       slots:[
-        {label:"a", img:"assets/listening/w1-a.png", fields:[num("No.","4"), pick("Word",W1,"grandma")]},
-        {label:"b", img:"assets/listening/w1-b.png", fields:[num("No.","6"), pick("Word",W1,"grandpa")]},
-        {label:"c", img:"assets/listening/w1-c.png", fields:[num("No.","5"), pick("Word",W1,"sister")]},
-        {label:"d", img:"assets/listening/w1-d.png", fields:[num("No.","3"), pick("Word",W1,"brother")]},
-        {label:"e", img:"assets/listening/w1-e.png", example:true, fields:[num("No.","1"), pick("Word",W1,"dad")]},
-        {label:"f", img:"assets/listening/w1-f.png", fields:[num("No.","2"), pick("Word",W1,"mum")]}
+        {label:"a", img:"assets/listening/w1-a.png", fields:[num("No.","4")]},
+        {label:"b", img:"assets/listening/w1-b.png", fields:[num("No.","6")]},
+        {label:"c", img:"assets/listening/w1-c.png", fields:[num("No.","5")]},
+        {label:"d", img:"assets/listening/w1-d.png", fields:[num("No.","3")]},
+        {label:"e", img:"assets/listening/w1-e.png", example:true, fields:[num("No.","1")]},
+        {label:"f", img:"assets/listening/w1-f.png", fields:[num("No.","2")]}
       ]
     },
     reading: [
@@ -81,14 +77,14 @@ const BANK = {
     listening: {
       type:"interactive", obj:"places / have to",
       audioSrc:"audio/listen-2.mp3",
-      instruction:"Listen and number 1–6. Then choose the correct have to phrase.",
+      instruction:"Listen and number the pictures 1–6 in the order you hear them.",
       slots:[
-        {label:"a", img:"assets/listening/w2-a.png", stem:"I ___ my tennis racket to the sports centre.", fields:[num("No.","5"), pick("Phrase",W2,"don't have to take")]},
-        {label:"b", img:"assets/listening/w2-b.png", stem:"My sister ___ some food at the supermarket.",   fields:[num("No.","3"), pick("Phrase",W2,"has to buy")]},
-        {label:"c", img:"assets/listening/w2-c.png", stem:"I ___ my grandma in hospital.",                 fields:[num("No.","2"), pick("Phrase",W2,"have to visit")]},
-        {label:"d", img:"assets/listening/w2-d.png", stem:"My brother has to get a book from the library.", example:true, fields:[num("No.","1"), pick("Phrase",W2,"has to get")]},
-        {label:"e", img:"assets/listening/w2-e.png", stem:"I ___ my ticket for the funfair.",              fields:[num("No.","6"), pick("Phrase",W2,"have to get")]},
-        {label:"f", img:"assets/listening/w2-f.png", stem:"My friend ___ a bus at the bus station.",       fields:[num("No.","4"), pick("Phrase",W2,"has to catch")]}
+        {label:"a", img:"assets/listening/w2-a.png", stem:"I don't have to take my tennis racket to the sports center.", fields:[num("No.","5")]},
+        {label:"b", img:"assets/listening/w2-b.png", stem:"My sister has to buy some food at the supermarket.",           fields:[num("No.","3")]},
+        {label:"c", img:"assets/listening/w2-c.png", stem:"I have to visit my grandma in the hospital.",                  fields:[num("No.","2")]},
+        {label:"d", img:"assets/listening/w2-d.png", stem:"My brother has to get a book from the library.", example:true, fields:[num("No.","1")]},
+        {label:"e", img:"assets/listening/w2-e.png", stem:"I have to get my ticket for the funfair.",                     fields:[num("No.","6")]},
+        {label:"f", img:"assets/listening/w2-f.png", stem:"My friend has to catch a bus at the bus station.",             fields:[num("No.","4")]}
       ]
     },
     reading: [
@@ -109,14 +105,14 @@ const BANK = {
     listening: {
       type:"interactive", obj:"travel gear",
       audioSrc:"audio/listen-3.mp3",
-      instruction:"Listen and tick a or b for each item. Then choose the word.",
+      instruction:"Listen and choose a or b — the picture that completes each sentence.",
       slots:[
-        {label:"1", img:"assets/listening/w3-1.png", stem:"Remember to pack your ___ before you go.", example:true, fields:[pick("a / b",AB,"b"), pick("Word",W3,"suitcase")]},
-        {label:"2", img:"assets/listening/w3-2.png", stem:"Put in your ___.",                         fields:[pick("a / b",AB,"a"), pick("Word",W3,"trainers")]},
-        {label:"3", img:"assets/listening/w3-3.png", stem:"Put up your ___ before it gets dark.",     fields:[pick("a / b",AB,"b"), pick("Word",W3,"tent")]},
-        {label:"4", img:"assets/listening/w3-4.png", stem:"Put on your ___ before getting into bed.", fields:[pick("a / b",AB,"b"), pick("Word",W3,"pyjamas")]},
-        {label:"5", img:"assets/listening/w3-5.png", stem:"Remember to write me a ___.",              fields:[pick("a / b",AB,"a"), pick("Word",W3,"postcard")]},
-        {label:"6", img:"assets/listening/w3-6.png", stem:"I need to put a ___ on it.",               fields:[pick("a / b",AB,"a"), pick("Word",W3,"stamp")]}
+        {label:"1", img:"assets/listening/w3-1.png", stem:"Remember to pack your ___ before you go.", example:true, fields:[pick("a / b",AB,"b")]},
+        {label:"2", img:"assets/listening/w3-2.png", stem:"Put in your ___.",                         fields:[pick("a / b",AB,"a")]},
+        {label:"3", img:"assets/listening/w3-3.png", stem:"Put up your ___ before it gets dark.",     fields:[pick("a / b",AB,"b")]},
+        {label:"4", img:"assets/listening/w3-4.png", stem:"Put on your ___ before getting into bed.", fields:[pick("a / b",AB,"b")]},
+        {label:"5", img:"assets/listening/w3-5.png", stem:"Remember to write me a ___.",              fields:[pick("a / b",AB,"a")]},
+        {label:"6", img:"assets/listening/w3-6.png", stem:"I need to put a ___ on it.",               fields:[pick("a / b",AB,"a")]}
       ]
     },
     reading: [
@@ -138,14 +134,14 @@ const BANK = {
     listening: {
       type:"interactive", obj:"home objects",
       audioSrc:"audio/listen-4.mp3",
-      instruction:"Listen and tick a or b for each item. Then choose the word.",
+      instruction:"Listen and choose a or b — the object being described.",
       slots:[
-        {label:"1", img:"assets/listening/w4-1.png", example:true, fields:[pick("a / b",AB,"a"), pick("Word",W4,"shampoo")]},
-        {label:"2", img:"assets/listening/w4-2.png", fields:[pick("a / b",AB,"b"), pick("Word",W4,"fridge")]},
-        {label:"3", img:"assets/listening/w4-3.png", fields:[pick("a / b",AB,"b"), pick("Word",W4,"comb")]},
-        {label:"4", img:"assets/listening/w4-4.png", fields:[pick("a / b",AB,"b"), pick("Word",W4,"key")]},
-        {label:"5", img:"assets/listening/w4-5.png", fields:[pick("a / b",AB,"a"), pick("Word",W4,"shelf")]},
-        {label:"6", img:"assets/listening/w4-6.png", fields:[pick("a / b",AB,"a"), pick("Word",W4,"toilet")]}
+        {label:"1", img:"assets/listening/w4-1.png", example:true, fields:[pick("a / b",AB,"a")]},
+        {label:"2", img:"assets/listening/w4-2.png", fields:[pick("a / b",AB,"b")]},
+        {label:"3", img:"assets/listening/w4-3.png", fields:[pick("a / b",AB,"b")]},
+        {label:"4", img:"assets/listening/w4-4.png", fields:[pick("a / b",AB,"b")]},
+        {label:"5", img:"assets/listening/w4-5.png", fields:[pick("a / b",AB,"a")]},
+        {label:"6", img:"assets/listening/w4-6.png", fields:[pick("a / b",AB,"a")]}
       ]
     },
     reading: [
@@ -196,14 +192,14 @@ const BANK = {
     listening: {
       type:"interactive", obj:"jobs",
       audioSrc:"audio/listen-6.mp3", matchImages:[{l:"a",img:"assets/listening/w6-a.png"},{l:"b",img:"assets/listening/w6-b.png"},{l:"c",img:"assets/listening/w6-c.png"},{l:"d",img:"assets/listening/w6-d.png"},{l:"e",img:"assets/listening/w6-e.png"},{l:"f",img:"assets/listening/w6-f.png"}],
-      instruction:"Listen and match each speaker (1–6) to a picture (a–f). Then choose the job.",
+      instruction:"Listen and match each speaker (1–6) to a picture (a–f).",
       slots:[
-        {label:"Speaker 1", example:true, fields:[pick("Picture",AF,"b"), pick("Job",W6,"cleaner")]},
-        {label:"Speaker 2", fields:[pick("Picture",AF,"e"), pick("Job",W6,"sailor")]},
-        {label:"Speaker 3", fields:[pick("Picture",AF,"a"), pick("Job",W6,"programmer")]},
-        {label:"Speaker 4", fields:[pick("Picture",AF,"c"), pick("Job",W6,"architect")]},
-        {label:"Speaker 5", fields:[pick("Picture",AF,"f"), pick("Job",W6,"hairdresser")]},
-        {label:"Speaker 6", fields:[pick("Picture",AF,"d"), pick("Job",W6,"librarian")]}
+        {label:"Speaker 1", example:true, fields:[pick("Picture",AF,"b")]},
+        {label:"Speaker 2", fields:[pick("Picture",AF,"e")]},
+        {label:"Speaker 3", fields:[pick("Picture",AF,"a")]},
+        {label:"Speaker 4", fields:[pick("Picture",AF,"c")]},
+        {label:"Speaker 5", fields:[pick("Picture",AF,"f")]},
+        {label:"Speaker 6", fields:[pick("Picture",AF,"d")]}
       ]
     },
     reading: [
